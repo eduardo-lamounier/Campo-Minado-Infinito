@@ -8,7 +8,7 @@ public class Grid
   {
     private Cell[,] _cells = new Cell[16, 16];
 
-    public Cell At(uint x, uint y) => _cells[x, y];
+    public Cell At(uint x, uint y) => _cells[y, x];
 
     public Cell At((uint X, uint Y) pos) => _cells[pos.Y, pos.X];
 
