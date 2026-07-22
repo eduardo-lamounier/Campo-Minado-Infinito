@@ -12,6 +12,9 @@ public record class Cell
   public bool GotInitialized => _initialized;
   public bool IsRevealed => _revealed;
 
+  // Armazena a quantidade de bombas ao redor dessa célula
+  //
+  // Settar essa propriedade inicializa a célula
   public int NearBombs
   {
     get;
@@ -23,6 +26,9 @@ public record class Cell
     }
   }
 
+  // Marca a célula como uma célula com bomba
+  //
+  // Inicializa a célula
   public void PlaceBomb()
   {
     _initialized = true;
