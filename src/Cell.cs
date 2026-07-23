@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace CampoMinado.Grid;
+namespace CampoMinado.Core;
 
 public record class Cell
 {

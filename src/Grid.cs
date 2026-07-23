@@ -1,6 +1,6 @@
-namespace CampoMinado.Grid;
+namespace CampoMinado.Core;
 
-public class Grid
+public class MineField
 {
   public const double BOMBS_DENSITY = 0.1;
 
@@ -17,7 +17,7 @@ public class Grid
     {
       // Inicializa a chunk com bombas
       Random rand = new();
-      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * Grid.BOMBS_DENSITY;)
+      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * MineField.BOMBS_DENSITY;)
       {
         uint x = (uint)rand.Next(0, 16);
         uint y = (uint)rand.Next(0, 16);
@@ -84,7 +84,7 @@ public class Grid
     return cell;
   }
 
-  public Grid()
+  public MineField()
   {
     _chunks[(0, 0)] = _origin;
   }
