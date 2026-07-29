@@ -31,7 +31,6 @@ public class MineField
     }
   }
 
-  private Chunk _origin = new();
   private Dictionary<(int X, int Y), Chunk> _chunks = [];
 
   /// <summary>
@@ -84,8 +83,5 @@ public class MineField
     return cell;
   }
 
-  public MineField()
-  {
-    _chunks[(0, 0)] = _origin;
-  }
+  public MineField() { }
 }
