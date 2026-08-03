@@ -2,7 +2,8 @@ namespace CampoMinado.Core;
 
 public class MineField
 {
-  public const double BOMBS_DENSITY = 0.1;
+  private double _bombsDensity;
+  public double BombsDensity => _bombsDensity;
 
   private class Chunk
   {
@@ -13,11 +14,11 @@ public class MineField
     public Cell At((uint X, uint Y) pos) => _cells[pos.Y, pos.X];
 
     // Inicializa o grid escolhendo posições aleatórias para conter bombas
-    public Chunk()
+    public Chunk(double bombsDensity)
     {
       // Inicializa a chunk com bombas
       Random rand = new();
-      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * MineField.BOMBS_DENSITY;)
+      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * bombsDensity;)
       {
         uint x = (uint)rand.Next(0, 16);
         uint y = (uint)rand.Next(0, 16);
@@ -45,7 +46,7 @@ public class MineField
   /// </summary>
   private Chunk ChunkAt((int X, int Y) chunkPosition)
   {
-    _chunks.TryAdd(chunkPosition, new Chunk());
+    _chunks.TryAdd(chunkPosition, new Chunk(BombsDensity));
     return _chunks[chunkPosition];
   }
 
@@ -105,7 +106,8 @@ public class MineField
   public bool InitializedAt((int X, int Y) pos)
   {
     var chunkPosition = ChunkPositionFrom(pos);
-    if (!_chunks.ContainsKey(chunkPosition)) return false;
+    if (!_chunks.ContainsKey(chunkPosition))
+      return false;
 
     var inChunkPosition = InChunkPositionFrom(pos);
 
