@@ -49,6 +49,20 @@ public class MineField
     return _chunks[chunkPosition];
   }
 
+  private record Positions2DPair((int X, int Y) chunkPos, (int X, int Y) inChunkPos);
+
+  private (int X, int Y) ChunkPositionFrom(int x, int y) =>
+    ((int)Math.Floor((double)x / 16), (int)Math.Floor((double)y / 16));
+
+  private (int X, int Y) ChunkPositionFrom((int X, int Y) pos) =>
+    ChunkPositionFrom(pos.X, pos.Y);
+
+  private (uint X, uint Y) InChunkPositionFrom(int x, int y) =>
+    ((uint)((x % 16 + 16) % 16), (uint)((y % 16 + 16) % 16));
+
+  private (uint X, uint Y) InChunkPositionFrom((int X, int Y) pos) =>
+    InChunkPositionFrom(pos.X, pos.Y);
+
   /// <summary>
   /// Retorna a célula em uma coordenada específica do mapa
   ///
@@ -57,15 +71,8 @@ public class MineField
   /// </summary>
   public Cell At(int x, int y)
   {
-    (int X, int Y) chunkPosition = (
-      (int)Math.Floor((double)x / 16),
-      (int)Math.Floor((double)y / 16)
-    );
-
-    (uint X, uint Y) inChunkPosition = (
-      (uint)(x - chunkPosition.X * 16),
-      (uint)(y - chunkPosition.Y * 16)
-    );
+    (int X, int Y) chunkPosition = ChunkPositionFrom(x, y);
+    (uint X, uint Y) inChunkPosition = InChunkPositionFrom(x, y);
 
     var chunk = ChunkAt(chunkPosition);
     var cell = chunk.At(inChunkPosition);
@@ -82,6 +89,37 @@ public class MineField
     cell.NearBombs = bombsCount;
     return cell;
   }
+
+  /// <summary>
+  /// Retorna a célula em uma coordenada específica do mapa
+  ///
+  /// Garante que a célula vai existir, inicializando regiões
+  /// do mapa automaticamente
+  /// </summary>
+  public Cell At((int X, int Y) pos) => At(pos.X, pos.Y);
+
+  /// <summary>
+  /// Retorna verdadeiro (`true`) caso a célula na posição especificada tenha
+  /// sido inicializada. Retorna falso (`false`) caso contrário.
+  /// </summary>
+  public bool InitializedAt((int X, int Y) pos)
+  {
+    var chunkPosition = ChunkPositionFrom(pos);
+    if (!_chunks.ContainsKey(chunkPosition)) return false;
+
+    var inChunkPosition = InChunkPositionFrom(pos);
+
+    var chunk = _chunks[chunkPosition];
+    var cell = chunk.At(inChunkPosition);
+
+    return cell.GotInitialized;
+  }
+
+  /// <summary>
+  /// Retorna verdadeiro (`true`) caso a célula na posição especificada tenha
+  /// sido inicializada. Retorna falso (`false`) caso contrário.
+  /// </summary>
+  public bool InitializedAt(int x, int y) => InitializedAt((x, y));
 
   public MineField() { }
 }
