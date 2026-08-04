@@ -52,8 +52,6 @@ public class MineField
     return _chunks[chunkPosition];
   }
 
-  private record Positions2DPair((int X, int Y) chunkPos, (int X, int Y) inChunkPos);
-
   private (int X, int Y) ChunkPositionFrom(int x, int y) =>
     ((int)Math.Floor((double)x / 16), (int)Math.Floor((double)y / 16));
 
