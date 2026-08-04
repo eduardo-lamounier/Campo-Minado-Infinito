@@ -2,37 +2,23 @@ using System.Diagnostics;
 
 namespace CampoMinado.Core;
 
-public record class Cell
+public abstract record class Cell
 {
-  private bool _initialized = false;
   private bool _revealed = false;
+  private bool _hasFlag = false;
 
-  public bool HaveFlag { get; set; } = false;
-  public bool HaveBomb => NearBombs == -1;
-  public bool GotInitialized => _initialized;
+  public bool HasFlag => _hasFlag;
   public bool IsRevealed => _revealed;
 
-  // Armazena a quantidade de bombas ao redor dessa célula
-  //
-  // Settar essa propriedade inicializa a célula
-  public int NearBombs
+  public void EnsureFlag()
   {
-    get;
-    set
-    {
-      Debug.Assert(value >= 0 && value <= 8);
-      _initialized = true;
-      field = value;
-    }
+    Debug.Assert(!_revealed);
+    _hasFlag = true;
   }
 
-  // Marca a célula como uma célula com bomba
-  //
-  // Inicializa a célula
-  public void PlaceBomb()
+  public void EnsureNoFlag()
   {
-    _initialized = true;
-    NearBombs = -1;
+    _hasFlag = false;
   }
 
   // Marca a célula como revelada para o jogador
@@ -41,7 +27,8 @@ public record class Cell
   // ser revelada
   public void Reveal()
   {
-    Debug.Assert(_initialized);
+    Debug.Assert(!_hasFlag);
+
     _revealed = true;
   }
 

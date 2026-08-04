@@ -2,6 +2,8 @@ namespace CampoMinado.Core;
 
 public class MineField
 {
+  public const double DEFAULT_BOMBS_DENSITY = 0.3;
+
   private double _bombsDensity;
   public double BombsDensity => _bombsDensity;
 
@@ -9,9 +11,9 @@ public class MineField
   {
     private Cell[,] _cells = new Cell[16, 16];
 
-    public Cell At(uint x, uint y) => _cells[y, x];
+    public ref Cell At(uint x, uint y) => ref _cells[y, x];
 
-    public Cell At((uint X, uint Y) pos) => _cells[pos.Y, pos.X];
+    public ref Cell At((uint X, uint Y) pos) => ref _cells[pos.Y, pos.X];
 
     // Inicializa o grid escolhendo posições aleatórias para conter bombas
     public Chunk(double bombsDensity)
@@ -23,9 +25,9 @@ public class MineField
         uint x = (uint)rand.Next(0, 16);
         uint y = (uint)rand.Next(0, 16);
 
-        if (!At(x, y).HaveBomb)
+        if (At(x, y) is not DangerousCell)
         {
-          At(x, y).PlaceBomb();
+          At(x, y) = new DangerousCell();
           bombsPlaced++;
         }
       }
@@ -76,18 +78,18 @@ public class MineField
     (uint X, uint Y) inChunkPosition = InChunkPositionFrom(x, y);
 
     var chunk = ChunkAt(chunkPosition);
-    var cell = chunk.At(inChunkPosition);
+    ref var cell = ref chunk.At(inChunkPosition);
 
-    if (cell.GotInitialized)
+    if (cell is DangerousCell || cell is SafeCell)
       return cell;
 
     int bombsCount = 0;
     for (int dx = -1; dx <= 1; dx++)
       for (int dy = -1; dy <= 1; dy++)
-        if ((dx != 0 && dy != 0) && At(x + dx, y + dy).HaveBomb)
+        if ((dx != 0 && dy != 0) && At(x + dx, y + dy) is DangerousCell)
           bombsCount++;
 
-    cell.NearBombs = bombsCount;
+    cell = new SafeCell(bombsCount);
     return cell;
   }
 
@@ -114,7 +116,7 @@ public class MineField
     var chunk = _chunks[chunkPosition];
     var cell = chunk.At(inChunkPosition);
 
-    return cell.GotInitialized;
+    return cell is DangerousCell || cell is SafeCell;
   }
 
   /// <summary>
@@ -123,5 +125,8 @@ public class MineField
   /// </summary>
   public bool InitializedAt(int x, int y) => InitializedAt((x, y));
 
-  public MineField() { }
+  public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
+  {
+    _bombsDensity = bombsDensity;
+  }
 }
