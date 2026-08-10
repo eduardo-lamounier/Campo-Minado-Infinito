@@ -36,6 +36,8 @@ public class MineField
 
   private Dictionary<(int X, int Y), Chunk> _chunks = [];
 
+  public int GeneratedChunksCount => _chunks.Count;
+
   /// <summary>
   /// Retorna a chunk atribuída a uma coordenada. Se essa chunk não
   /// existir, ela é inicializada.
