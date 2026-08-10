@@ -66,6 +66,18 @@ public class MineField
   private (uint X, uint Y) InChunkPositionFrom((int X, int Y) pos) =>
     InChunkPositionFrom(pos.X, pos.Y);
 
+  public bool IsDangerousAt(int x, int y)
+  {
+    var chunkPosition = ChunkPositionFrom(x, y);
+    var inChunkPosition = InChunkPositionFrom(x, y);
+
+    var chunk = ChunkAt(chunkPosition);
+    var cell = chunk.At(inChunkPosition);
+    return cell is DangerousCell;
+  }
+
+  public bool IsDangerousAt((int X, int Y) pos) => IsDangerousAt(pos.X, pos.Y);
+
   /// <summary>
   /// Retorna a célula em uma coordenada específica do mapa
   ///
@@ -86,7 +98,7 @@ public class MineField
     int bombsCount = 0;
     for (int dx = -1; dx <= 1; dx++)
       for (int dy = -1; dy <= 1; dy++)
-        if ((dx != 0 && dy != 0) && At(x + dx, y + dy) is DangerousCell)
+        if ((dx != 0 && dy != 0) && IsDangerousAt(x + dx, y + dy))
           bombsCount++;
 
     cell = new SafeCell(bombsCount);
