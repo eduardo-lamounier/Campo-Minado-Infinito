@@ -98,7 +98,7 @@ public class MineField
     int bombsCount = 0;
     for (int dx = -1; dx <= 1; dx++)
       for (int dy = -1; dy <= 1; dy++)
-        if ((dx != 0 && dy != 0) && IsDangerousAt(x + dx, y + dy))
+        if ((dx != 0 || dy != 0) && IsDangerousAt(x + dx, y + dy))
           bombsCount++;
 
     cell = new SafeCell(bombsCount);
