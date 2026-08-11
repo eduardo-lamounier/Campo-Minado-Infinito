@@ -4,8 +4,7 @@ public class MineField
 {
   public const double DEFAULT_BOMBS_DENSITY = 0.3;
 
-  private double _bombsDensity;
-  public double BombsDensity => _bombsDensity;
+  public double BombsDensity { get; }
 
   private class Chunk
   {
@@ -139,6 +138,6 @@ public class MineField
 
   public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
   {
-    _bombsDensity = bombsDensity;
+    BombsDensity = bombsDensity;
   }
 }

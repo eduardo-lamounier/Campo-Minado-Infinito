@@ -4,21 +4,18 @@ namespace CampoMinado.Core;
 
 public abstract record class Cell
 {
-  private bool _revealed = false;
-  private bool _hasFlag = false;
-
-  public bool HasFlag => _hasFlag;
-  public bool IsRevealed => _revealed;
+  public bool HasFlag { get; private set; }
+  public bool IsRevealed { get; private set; }
 
   public void EnsureFlag()
   {
-    Debug.Assert(!_revealed);
-    _hasFlag = true;
+    Debug.Assert(!IsRevealed);
+    HasFlag = true;
   }
 
   public void EnsureNoFlag()
   {
-    _hasFlag = false;
+    HasFlag = false;
   }
 
   // Marca a célula como revelada para o jogador
@@ -27,9 +24,9 @@ public abstract record class Cell
   // ser revelada
   public void Reveal()
   {
-    Debug.Assert(!_hasFlag);
+    Debug.Assert(!HasFlag);
 
-    _revealed = true;
+    IsRevealed = true;
   }
 
   public Cell() { }
