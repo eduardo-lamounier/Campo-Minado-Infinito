@@ -41,9 +41,6 @@ public class MainGame : Game
   protected override void Initialize()
   {
     base.Initialize();
-
-    GraphicsDevice = base.GraphicsDevice;
-    SpriteBatch = new SpriteBatch(GraphicsDevice);
   }
 
   protected override void LoadContent() { }
@@ -62,5 +59,8 @@ public class MainGame : Game
     Content.RootDirectory = "Content";
 
     IsMouseVisible = true;
+
+    GraphicsDevice = base.GraphicsDevice;
+    SpriteBatch = new SpriteBatch(GraphicsDevice);
   }
 }
