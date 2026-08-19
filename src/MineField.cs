@@ -136,6 +136,69 @@ public class MineField
   /// </summary>
   public bool InitializedAt(int x, int y) => InitializedAt((x, y));
 
+  /// <summary>
+  /// Retorna uma matriz com as células em uma região quadrada do grid.
+  /// </summary>
+  /// <param name="positionX">
+  /// Coordenada X do canto superior à esquerda da região.
+  /// </param>
+  /// <param name="positionY">
+  /// Coordenada Y do canto superior à esquerda da região.
+  /// </param>
+  /// <param name="width">
+  /// Largura (em quant. de células) da região. A região se extenderá para a direita.
+  /// </param>
+  /// <param name="height">
+  /// Altura (em quant. de células) da região. A região se extenderá para baixo.
+  /// </param>
+  /// <remarks>
+  /// Matematicamente:
+  /// <list>
+  /// <item><description>
+  ///   as coordenadas X da região estão no intervalo `[positionX, positionX+width[`
+  /// </description></item>
+  /// <item><description>
+  ///   as coordenadas Y da região estão no intervalo `[positionY,positionY-height[`
+  /// </description></item>
+  /// </list>
+  /// </remarks>
+  public Cell[,] GetRegion(int positionX, int positionY, int width, int height)
+  {
+    var region = new Cell[width, height];
+
+    for (int i = 0; i < height; i++)
+      for (int j = 0; j < width; j++)
+        region[i, j] = At(positionX + i, positionY - j);
+
+    return region;
+  }
+
+  /// <summary>
+  /// Retorna uma matriz com as células em uma região quadrada do grid.
+  /// </summary>
+  /// <param name="position">
+  /// Coordenada do canto superior à esquerda da região.
+  /// </param>
+  /// <param name="width">
+  /// Largura (em quant. de células) da região. A região se extenderá para a direita.
+  /// </param>
+  /// <param name="height">
+  /// Altura (em quant. de células) da região. A região se extenderá para baixo.
+  /// </param>
+  /// <remarks>
+  /// Matematicamente:
+  /// <list>
+  /// <item><description>
+  ///   as coordenadas X da região estão no intervalo `[position.X, position.X+width[`
+  /// </description></item>
+  /// <item><description>
+  ///   as coordenadas Y da região estão no intervalo `[position.Y,position.Y-height[`
+  /// </description></item>
+  /// </list>
+  /// </remarks>
+  public Cell[,] GetRegion((int X, int Y) position, int width, int height) =>
+    GetRegion(position.X, position.Y, width, height);
+
   public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
   {
     BombsDensity = bombsDensity;
