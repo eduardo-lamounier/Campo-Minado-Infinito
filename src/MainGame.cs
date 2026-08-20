@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+namespace CampoMinado;
+
 public class MainGame : Game
 {
   public static void Main() => new MainGame("Campo Minado Infinito", 1280, 720).Run();
