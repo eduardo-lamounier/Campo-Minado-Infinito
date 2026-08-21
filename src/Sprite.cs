@@ -93,6 +93,11 @@ public record class Sprite(Texture2D texture)
     };
 
   /// <summary>
+  /// Retorna o sprite com toda a textura sendo renderizada - nenhuma área específica.
+  /// </summary>
+  public Sprite WithNoSourceRectangle() => this with { SourceRect = null };
+
+  /// <summary>
   /// Retorna o sprite com a rotação alterada.
   /// </summary>
   public Sprite WithRotation(float rotation) => this with { Rotation = rotation };
