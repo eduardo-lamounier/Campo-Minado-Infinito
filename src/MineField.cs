@@ -1,11 +1,24 @@
 namespace CampoMinado.Core;
 
+/// <summary>
+/// Representa o mapa do campo minado. Armazena o estado de todas as células inicializadas
+/// do mapa, encapsulando todos os detalhes de implementação.
+/// </summary>
 public class MineField
 {
+  /// <summary>
+  /// Quantidade padrão de bombas por célula.
+  /// </summary>
   public const double DEFAULT_BOMBS_DENSITY = 0.3;
 
+  /// <summary>
+  /// Quantidade de bombas por célula definida para o campo minado.
+  /// </summary>
   public double BombsDensity { get; }
 
+  /// <summary>
+  /// Gerencia o estado de uma região de 256 unidades de área (16x16 células).
+  /// </summary>
   private class Chunk
   {
     private Cell[,] _cells = new Cell[16, 16];
@@ -33,8 +46,15 @@ public class MineField
     }
   }
 
+  /// <summary>
+  /// Armazena as chunks inicializadas - ou seja, aquelas na quão tiveram alguma célula
+  /// interagindo com o jogador.
+  /// </summary>
   private Dictionary<(int X, int Y), Chunk> _chunks = [];
 
+  /// <summary>
+  /// Armazena a quantidade de chunks geradas até então no campo minado.
+  /// </summary>
   public int GeneratedChunksCount => _chunks.Count;
 
   /// <summary>
@@ -53,18 +73,40 @@ public class MineField
     return _chunks[chunkPosition];
   }
 
+  /// <summary>
+  /// Retorna a posição atribuída à chunk na quão a célula em uma coordenada específica
+  /// pertence.
+  /// </summary>
   private (int X, int Y) ChunkPositionFrom(int x, int y) =>
     ((int)Math.Floor((double)x / 16), (int)Math.Floor((double)y / 16));
 
+  /// <summary>
+  /// Retorna a posição atribuída à chunk na quão a célula em uma coordenada específica
+  /// pertence.
+  /// </summary>
   private (int X, int Y) ChunkPositionFrom((int X, int Y) pos) =>
     ChunkPositionFrom(pos.X, pos.Y);
 
+  /// <summary>
+  /// Retorna a posição, da célula na coordenada específicada, dentro da chunk na quão ela
+  /// pertence.
+  /// </summary>
   private (uint X, uint Y) InChunkPositionFrom(int x, int y) =>
     ((uint)((x % 16 + 16) % 16), (uint)((y % 16 + 16) % 16));
 
+  /// <summary>
+  /// Retorna a posição, da célula na coordenada específicada, dentro da chunk na quão ela
+  /// pertence.
+  /// </summary>
   private (uint X, uint Y) InChunkPositionFrom((int X, int Y) pos) =>
     InChunkPositionFrom(pos.X, pos.Y);
 
+  /// <summary>
+  /// Retorna verdadeiro caso a célula especificada tenha bomba, ou falso caso contrário.
+  /// </summary>
+  /// <remarks>
+  /// Diferentemente de 'At(...)', não inicializa a célula.
+  /// </remarks>
   public bool IsDangerousAt(int x, int y)
   {
     var chunkPosition = ChunkPositionFrom(x, y);
@@ -75,6 +117,12 @@ public class MineField
     return cell is DangerousCell;
   }
 
+  /// <summary>
+  /// Retorna verdadeiro caso a célula especificada tenha bomba, ou falso caso contrário.
+  /// </summary>
+  /// <remarks>
+  /// Diferentemente de 'At(...)', não inicializa a célula.
+  /// </remarks>
   public bool IsDangerousAt((int X, int Y) pos) => IsDangerousAt(pos.X, pos.Y);
 
   /// <summary>
