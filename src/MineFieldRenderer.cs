@@ -9,7 +9,7 @@ public class MineFieldRenderer(ContentManager content)
 {
   private ContentManager Content => content;
 
-  public Texture2D TextureForCell(Cell cell)
+  private Texture2D TextureForCell(Cell cell)
   {
     Debug.Assert(Content.RootDirectory == "Content");
 
@@ -31,6 +31,12 @@ public class MineFieldRenderer(ContentManager content)
     return Content.Load<Texture2D>($"images/Cell_{nearBombs}");
   }
 
+  /// <summary>
+  /// Retorna o sprite com textura correspondente à célula passada.
+  ///
+  /// Todas os outros atributos do sprite são definidos como padrão, logo pode ser
+  /// necessário usar 'WithPosition', 'WithRotation' etc.
+  /// </summary>
   public Sprite RenderCell(Cell cell)
   {
     var texture = TextureForCell(cell);
