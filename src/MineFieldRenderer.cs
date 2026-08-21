@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CampoMinado.Rendering;
 
+/// <summary>
+/// Responsável por renderizar células do campo minado, gerando os sprites que vão ser
+/// desenhados na tela.
+/// </summary>
 public class MineFieldRenderer(ContentManager content)
 {
   private ContentManager Content => content;
