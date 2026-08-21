@@ -19,6 +19,10 @@ public record class Sprite(Texture2D texture)
   /// <summary>
   /// Posição do sprite na tela do programa.
   /// </summary>
+  /// <remarks>
+  /// É a posição (0,0) por padrão, o que quer dizer que ele será desenhado no canto
+  /// superior esquerdo da janela do programa.
+  /// </remarks>
   public Vector2 Position { get; private set; } = Vector2.Zero;
 
   /// <summary>
@@ -26,26 +30,38 @@ public record class Sprite(Texture2D texture)
   /// </summary>
   /// <remarks>
   /// Quando `null`, toda a textura será renderizada.
+  ///
+  /// É `null` por padrão.
   /// </remarks>
-  public Rectangle? SourceRect { get; private set; }
+  public Rectangle? SourceRect { get; private set; } = null;
 
   /// <summary>
   /// Rotação, em radianos, do sprite (sentido anti-horário).
   /// </summary>
+  /// <remarks>
+  /// É 0.0 por padrão.
+  /// </remarks>
   public float Rotation { get; private set; } = 0;
 
   /// <summary>
   /// Colorização do sprite - essa cor é multiplicada pelas cores que fazem parte da
   /// textura do sprite.
   /// </summary>
+  /// <remarks>
+  /// É 'Color.White' por padrão - o que não muda as cores do sprite original.
+  /// </remarks>
   public Color Color { get; private set; } = Color.White;
 
   /// <summary>
-  /// Posição/Offset do sprite em relação ao topo esquerdo.
+  /// Posição/Offset do sprite em relação ao topo esquerdo da textura.
   ///
   /// Define onde 'Position' realmente apontará na tela, como o sprite será
   /// rotacionado e como ele é escalado.
   /// </summary>
+  /// <remarks>
+  /// É 0.0 por padrão, o que quer dizer que é definido no canto superior esquerdo da
+  /// textura do sprite.
+  /// </remarks>
   public Vector2 Origin { get; private set; } = Vector2.Zero;
 
   /// <summary>
@@ -55,12 +71,18 @@ public record class Sprite(Texture2D texture)
   /// <remarks>
   /// Pode distorcer a imagem de forma indesejada caso as componentes 'X' e 'Y' sejam
   /// diferentes. Necessário ter cuidado.
+  ///
+  /// É (1,1) por padrão, o que faz com que o tamanho não seja alterado.
   /// </remarks>
   public Vector2 Scale { get; private set; } = Vector2.One;
 
   /// <summary>
   /// Define se o sprite vai ser espelhado de alguma forma.
   /// </summary>
+  /// <remarks>
+  /// É 'SpriteEffects.None' por padrão, o que faz com que nenhum efeito seja aplicado ao
+  /// sprite.
+  /// </remarks>
   public SpriteEffects Effects { get; private set; } = SpriteEffects.None;
 
   /// <summary>
@@ -70,6 +92,8 @@ public record class Sprite(Texture2D texture)
   /// <remarks>
   /// Não tem efeito quando 'SpriteBatch.Begin(...)' é chamado, por exemplo, com
   /// 'sortMode: SpriteSortMode.Deferred' - padrão caso nada seja passado.
+  ///
+  /// É 0.0 por padrão.
   /// </remarks>
   public float LayerDepth { get; private set; } = 0;
 
