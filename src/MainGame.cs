@@ -5,18 +5,41 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CampoMinado;
 
+/// <summary>
+/// Classe principal do programa. Contém a definição do método de entrada e a lógica do game loop.
+/// </summary>
 public class MainGame : Game
 {
   public static void Main() => new MainGame("Campo Minado Infinito", 1280, 720).Run();
 
+  /// <summary>
+  /// Gerencia as configurações relacionadas aos gráficos e à janela do programa.
+  /// </summary>
   public GraphicsDeviceManager Graphics { get; private set; }
 
+  /// <summary>
+  /// Representa o dispositivo responsável pela renderização dos gráficos do programa.
+  /// </summary>
   public new GraphicsDevice GraphicsDevice { get; private set; }
 
+  /// <summary>
+  /// Responsável pela renderização de sprites e texturas na tela.
+  /// </summary>
   public SpriteBatch SpriteBatch { get; private set; }
 
+  /// <summary>
+  /// Gerencia o carregamento e o acesso aos assets do programa.
+  /// </summary>
   public new ContentManager Content { get; private set; }
 
+  /// <summary>
+  /// Método chamado a todo frame. Contém lógica do programa que tem que ser
+  /// atualizada a todo momento.
+  /// </summary>
+  /// <remarks>
+  /// NÃO é responsável pela lógica de renderização, mas chama automaticamente o
+  /// método 'Draw', que tem.
+  /// </remarks>
   protected override void Update(GameTime gameTime)
   {
     if (
@@ -33,6 +56,13 @@ public class MainGame : Game
     base.Update(gameTime);
   }
 
+  /// <summary>
+  /// Método chamado a todo frame. Contém lógica de renderização do programa.
+  /// </summary>
+  /// <remarks>
+  /// NÃO é responsável pela lógica periódica genérica do programa, que é responsábilidade
+  /// de 'Update'.
+  /// </remarks>
   protected override void Draw(GameTime gameTime)
   {
     GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -40,13 +70,39 @@ public class MainGame : Game
     base.Draw(gameTime);
   }
 
+  /// <summary>
+  /// Contém a lógica de inicialização do programa. É chamada antes do game loop com
+  /// 'Update' e 'Draw'.
+  /// </summary>
+  /// <remarks>
+  /// NÃO é responsável pela lógica de inicialização da classe nem pela lógica de
+  /// carregamento dos sprites, texturas etc (assets em geral).
+  ///
+  /// Chama 'LoadContent' - que é responsável pelo carregamento de assets -
+  /// automaticamente.
+  /// </remarks>
   protected override void Initialize()
   {
     base.Initialize();
   }
 
+  /// <summary>
+  /// Contém a lógica de carregamento dos assets do programa. É chamada antes do game
+  /// loop, depois da lógica de inicialização genérica - 'Initialize'.
+  /// </summary>
   protected override void LoadContent() { }
 
+  /// <summary>
+  /// Inicializa o objeto 'MainGame', mas não inicia o jogo em si: para isso é necessário
+  /// chamar o método 'Run'.
+  /// </summary>
+  /// <param name="title">Recebe o título da janela do programa.</param>
+  /// <param name="width">
+  ///   Recebe a quantidade de pixels de largura da janela do programa.
+  /// </param>
+  /// <param name="height">
+  ///   Recebe a quantidade de pixels de altura da janela do programa.
+  /// </param>
   public MainGame(string title, int width, int height)
   {
     Graphics = new(this);
