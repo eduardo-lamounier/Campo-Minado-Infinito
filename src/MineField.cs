@@ -211,7 +211,7 @@ public class MineField
   /// </description></item>
   /// </list>
   /// </remarks>
-  public Cell[,] GetRegion(int positionX, int positionY, int width, int height)
+  public Cell[,] GetRegion(int positionX, int positionY, uint width, uint height)
   {
     var region = new Cell[width, height];
 
@@ -245,7 +245,7 @@ public class MineField
   /// </description></item>
   /// </list>
   /// </remarks>
-  public Cell[,] GetRegion((int X, int Y) position, int width, int height) =>
+  public Cell[,] GetRegion((int X, int Y) position, uint width, uint height) =>
     GetRegion(position.X, position.Y, width, height);
 
   public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
