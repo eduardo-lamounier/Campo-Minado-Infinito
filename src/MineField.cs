@@ -1,3 +1,5 @@
+using CampoMinado.Core.Exceptions;
+
 namespace CampoMinado.Core;
 
 /// <summary>
@@ -96,7 +98,6 @@ public class MineField
 
   /// <summary>
   /// Retorna a posição, da célula na coordenada específicada, dentro da <see cref="Chunk"/>
-
   /// na quão ela pertence.
   /// </summary>
   private (uint X, uint Y) InChunkPositionFrom((int X, int Y) pos) =>
@@ -248,8 +249,17 @@ public class MineField
   public Cell[,] GetRegion((int X, int Y) position, uint width, uint height) =>
     GetRegion(position.X, position.Y, width, height);
 
+  /// <param name="bombsDensity">
+  /// Densidade de bombas, deve estar no intervalo [0, 1].
+  /// </param>
+  /// <exception cref="InvalidBombDensityException">
+  /// Lançada se a densidade estiver fora de [0, 1].
+  /// </exception>
   public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
   {
+    if (bombsDensity < 0.0 || bombsDensity > 1.0)
+      throw new InvalidBombDensityException(bombsDensity);
+
     BombsDensity = bombsDensity;
   }
 }
