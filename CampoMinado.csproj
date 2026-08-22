@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.57.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
   </ItemGroup>
