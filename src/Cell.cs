@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using CampoMinado.Core.Exceptions;
 
 namespace CampoMinado.Core;
 
@@ -20,14 +20,18 @@ public abstract record class Cell
   public bool IsRevealed { get; private set; }
 
   /// <summary>
-  /// Garante que nenhuma bandeira estará nessa célula
+  /// Garante que uma bandeira estará nessa célula.
   /// </summary>
-  /// <remarks>
-  /// NÃO deve ser usada se a célula tiver sido revelada.
-  /// </remarks>
+  /// <exception cref="InvalidCellOperationException">
+  /// Lançada se a célula já tiver sido revelada.
+  /// </exception>
   public void EnsureFlag()
   {
-    Debug.Assert(!IsRevealed);
+    if (IsRevealed)
+      throw new InvalidCellOperationException(
+        "Não é possível colocar bandeira em uma célula já revelada."
+      );
+
     HasFlag = true;
   }
 
@@ -40,14 +44,17 @@ public abstract record class Cell
   }
 
   /// <summary>
-  /// Marca a célula como revelada para o jogador
-  ///
-  /// Uma célula que não foi inicializada não deve
-  /// ser revelada
+  /// Marca a célula como revelada para o jogador.
   /// </summary>
+  /// <exception cref="InvalidCellOperationException">
+  /// Lançada se a célula ainda tiver bandeira.
+  /// </exception>
   public void Reveal()
   {
-    Debug.Assert(!HasFlag);
+    if (HasFlag)
+      throw new InvalidCellOperationException(
+        "Não é possível revelar uma célula que ainda possui bandeira."
+      );
 
     IsRevealed = true;
   }
