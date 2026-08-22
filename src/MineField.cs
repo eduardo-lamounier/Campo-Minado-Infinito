@@ -17,7 +17,7 @@ public class MineField
   public double BombsDensity { get; }
 
   /// <summary>
-  /// Gerencia o estado de uma região de 256 unidades de área (16x16 células).
+  /// Gerencia o estado de uma região de 256 <see cref="Cell"/> (16x16).
   /// </summary>
   private class Chunk
   {
@@ -58,13 +58,13 @@ public class MineField
   public int GeneratedChunksCount => _chunks.Count;
 
   /// <summary>
-  /// Retorna a chunk atribuída a uma coordenada. Se essa chunk não
+  /// Retorna a <see cref="Chunk"/> atribuída a uma coordenada. Se essa chunk não
   /// existir, ela é inicializada.
   /// </summary>
   private Chunk ChunkAt(int cx, int cy) => ChunkAt((cx, cy));
 
   /// <summary>
-  /// Retorna a chunk atribuída a uma coordenada. Se essa chunk não
+  /// Retorna a <see cref="Chunk"/> atribuída a uma coordenada. Se essa chunk não
   /// existir, ela é inicializada.
   /// </summary>
   private Chunk ChunkAt((int X, int Y) chunkPosition)
@@ -74,29 +74,30 @@ public class MineField
   }
 
   /// <summary>
-  /// Retorna a posição atribuída à chunk na quão a célula em uma coordenada específica
-  /// pertence.
+  /// Retorna a posição atribuída à <see cref="Chunk"/> na quão a célula em uma coordenada
+  /// específica pertence.
   /// </summary>
   private (int X, int Y) ChunkPositionFrom(int x, int y) =>
     ((int)Math.Floor((double)x / 16), (int)Math.Floor((double)y / 16));
 
   /// <summary>
-  /// Retorna a posição atribuída à chunk na quão a célula em uma coordenada específica
-  /// pertence.
+  /// Retorna a posição atribuída à <see cref="Chunk"/> na quão a célula em uma coordenada
+  /// específica pertence.
   /// </summary>
   private (int X, int Y) ChunkPositionFrom((int X, int Y) pos) =>
     ChunkPositionFrom(pos.X, pos.Y);
 
   /// <summary>
-  /// Retorna a posição, da célula na coordenada específicada, dentro da chunk na quão ela
-  /// pertence.
+  /// Retorna a posição, da célula na coordenada específicada, dentro da <see cref="Chunk"/>
+  /// na quão ela pertence.
   /// </summary>
   private (uint X, uint Y) InChunkPositionFrom(int x, int y) =>
     ((uint)((x % 16 + 16) % 16), (uint)((y % 16 + 16) % 16));
 
   /// <summary>
-  /// Retorna a posição, da célula na coordenada específicada, dentro da chunk na quão ela
-  /// pertence.
+  /// Retorna a posição, da célula na coordenada específicada, dentro da <see cref="Chunk"/>
+
+  /// na quão ela pertence.
   /// </summary>
   private (uint X, uint Y) InChunkPositionFrom((int X, int Y) pos) =>
     InChunkPositionFrom(pos.X, pos.Y);
@@ -105,7 +106,7 @@ public class MineField
   /// Retorna verdadeiro caso a célula especificada tenha bomba, ou falso caso contrário.
   /// </summary>
   /// <remarks>
-  /// Diferentemente de 'At(...)', não inicializa a célula.
+  /// Diferentemente de <see cref="At"/>, não inicializa a célula.
   /// </remarks>
   public bool IsDangerousAt(int x, int y)
   {
@@ -121,7 +122,7 @@ public class MineField
   /// Retorna verdadeiro caso a célula especificada tenha bomba, ou falso caso contrário.
   /// </summary>
   /// <remarks>
-  /// Diferentemente de 'At(...)', não inicializa a célula.
+  /// Diferentemente de <see cref="At"/>, não inicializa a célula.
   /// </remarks>
   public bool IsDangerousAt((int X, int Y) pos) => IsDangerousAt(pos.X, pos.Y);
 
@@ -161,8 +162,8 @@ public class MineField
   public Cell At((int X, int Y) pos) => At(pos.X, pos.Y);
 
   /// <summary>
-  /// Retorna verdadeiro (`true`) caso a célula na posição especificada tenha
-  /// sido inicializada. Retorna falso (`false`) caso contrário.
+  /// Retorna <see cref="true"/> caso a célula na posição especificada tenha
+  /// sido inicializada. Retorna <see cref="false"/> caso contrário.
   /// </summary>
   public bool InitializedAt((int X, int Y) pos)
   {
@@ -179,8 +180,8 @@ public class MineField
   }
 
   /// <summary>
-  /// Retorna verdadeiro (`true`) caso a célula na posição especificada tenha
-  /// sido inicializada. Retorna falso (`false`) caso contrário.
+  /// Retorna <see cref="true"/> caso a célula na posição especificada tenha
+  /// sido inicializada. Retorna <see cref="false"/> caso contrário.
   /// </summary>
   public bool InitializedAt(int x, int y) => InitializedAt((x, y));
 
