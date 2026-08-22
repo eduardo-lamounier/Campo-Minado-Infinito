@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using CampoMinado.Core;
+using CampoMinado.Core.Exceptions;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,7 +19,7 @@ public class MineFieldRenderer(ContentManager content)
     Debug.Assert(Content.RootDirectory == "Content");
 
     if (cell is not SafeCell && cell is not DangerousCell)
-      return Content.Load<Texture2D>("images_Cell_Unrevealed");
+      return Content.Load<Texture2D>("images/Cell_Unrevealed");
 
     if (!cell.IsRevealed)
     {
