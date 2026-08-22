@@ -11,12 +11,12 @@ public class MineField
   /// <summary>
   /// Quantidade padrão de bombas por célula.
   /// </summary>
-  public const double DEFAULT_BOMBS_DENSITY = 0.3;
+  public const double DEFAULT_BOMB_DENSITY = 0.3;
 
   /// <summary>
-  /// Quantidade de bombas por célula definida para o campo minado.
+  /// Quantidade de bomba por célula definida para o campo minado.
   /// </summary>
-  public double BombsDensity { get; }
+  public double BombDensity { get; }
 
   /// <summary>
   /// Gerencia o estado de uma região de 256 <see cref="Cell"/> (16x16).
@@ -30,11 +30,11 @@ public class MineField
     public ref Cell At((uint X, uint Y) pos) => ref _cells[pos.Y, pos.X];
 
     // Inicializa o grid escolhendo posições aleatórias para conter bombas
-    public Chunk(double bombsDensity)
+    public Chunk(double bombDensity)
     {
       // Inicializa a chunk com bombas
       Random rand = new();
-      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * bombsDensity;)
+      for (uint bombsPlaced = 0; bombsPlaced < 16 * 16 * bombDensity;)
       {
         uint x = (uint)rand.Next(0, 16);
         uint y = (uint)rand.Next(0, 16);
@@ -71,7 +71,7 @@ public class MineField
   /// </summary>
   private Chunk ChunkAt((int X, int Y) chunkPosition)
   {
-    _chunks.TryAdd(chunkPosition, new Chunk(BombsDensity));
+    _chunks.TryAdd(chunkPosition, new Chunk(BombDensity));
     return _chunks[chunkPosition];
   }
 
@@ -249,17 +249,17 @@ public class MineField
   public Cell[,] GetRegion((int X, int Y) position, uint width, uint height) =>
     GetRegion(position.X, position.Y, width, height);
 
-  /// <param name="bombsDensity">
-  /// Densidade de bombas, deve estar no intervalo [0, 1].
+  /// <param name="bombDensity">
+  /// Densidade de bomba deve estar no intervalo [0, 1].
   /// </param>
   /// <exception cref="InvalidBombDensityException">
   /// Lançada se a densidade estiver fora de [0, 1].
   /// </exception>
-  public MineField(double bombsDensity = DEFAULT_BOMBS_DENSITY)
+  public MineField(double bombDensity = DEFAULT_BOMB_DENSITY)
   {
-    if (bombsDensity < 0.0 || bombsDensity > 1.0)
-      throw new InvalidBombDensityException(bombsDensity);
+    if (bombDensity < 0.0 || bombDensity > 1.0)
+      throw new InvalidBombDensityException(bombDensity);
 
-    BombsDensity = bombsDensity;
+    BombDensity = bombDensity;
   }
 }
