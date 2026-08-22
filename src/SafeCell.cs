@@ -1,6 +1,6 @@
-namespace CampoMinado.Core;
+using CampoMinado.Core.Exceptions;
 
-using System.Diagnostics;
+namespace CampoMinado.Core;
 
 /// <summary>
 /// Representa uma célula sem bomba do campo minado. Armazena a quantidade células com
@@ -15,12 +15,17 @@ public record class SafeCell : Cell
   /// DEVE ser um número entre 0 e 8, afinal não tem como haver uma quantidade negativa de
   /// células adjacentes ou uma quantidade maior que 8.
   /// </remarks>
+  /// <exception cref="InvalidNearBombsException">
+  /// Lançada ao atribuir um valor fora do intervalo [0, 8].
+  /// </exception>
   public int NearBombs
   {
     get;
     set
     {
-      Debug.Assert(value >= 0 && value < 9);
+      if (value < 0 || value > 8)
+        throw new InvalidNearBombsException(value);
+
       field = value;
     }
   }
