@@ -1,3 +1,4 @@
+using CampoMinado.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +25,8 @@ public class MainGame : Game
 
   /// <summary>
   /// Responsável pela renderização de sprites e texturas na tela.
+  ///
+  /// Necessário para <see cref="Sprite.Draw"/>.
   /// </summary>
   public SpriteBatch SpriteBatch { get; private set; }
 
@@ -38,7 +41,7 @@ public class MainGame : Game
   /// </summary>
   /// <remarks>
   /// NÃO é responsável pela lógica de renderização, mas chama automaticamente o
-  /// método 'Draw', que tem.
+  /// método <see cref="Draw"/>, que tem.
   /// </remarks>
   protected override void Update(GameTime gameTime)
   {
@@ -61,7 +64,7 @@ public class MainGame : Game
   /// </summary>
   /// <remarks>
   /// NÃO é responsável pela lógica periódica genérica do programa, que é responsábilidade
-  /// de 'Update'.
+  /// de <see cref="Update"/>.
   /// </remarks>
   protected override void Draw(GameTime gameTime)
   {
@@ -72,13 +75,13 @@ public class MainGame : Game
 
   /// <summary>
   /// Contém a lógica de inicialização do programa. É chamada antes do game loop com
-  /// 'Update' e 'Draw'.
+  /// <see cref="Update"/> e <see cref="Draw"/>.
   /// </summary>
   /// <remarks>
   /// NÃO é responsável pela lógica de inicialização da classe nem pela lógica de
   /// carregamento dos sprites, texturas etc (assets em geral).
   ///
-  /// Chama 'LoadContent' - que é responsável pelo carregamento de assets -
+  /// Chama <see cref="LoadContent"/> - que é responsável pelo carregamento de assets -
   /// automaticamente.
   /// </remarks>
   protected override void Initialize()
@@ -88,13 +91,13 @@ public class MainGame : Game
 
   /// <summary>
   /// Contém a lógica de carregamento dos assets do programa. É chamada antes do game
-  /// loop, depois da lógica de inicialização genérica - 'Initialize'.
+  /// loop, depois da lógica de inicialização genérica - <see cref="Initialize"/>.
   /// </summary>
   protected override void LoadContent() { }
 
   /// <summary>
-  /// Inicializa o objeto 'MainGame', mas não inicia o jogo em si: para isso é necessário
-  /// chamar o método 'Run'.
+  /// Inicializa o objeto <see cref="MainGame"/>, mas não inicia o jogo em si: para isso é necessário
+  /// chamar o método <see cref="Game.Run"/>.
   /// </summary>
   /// <param name="title">Recebe o título da janela do programa.</param>
   /// <param name="width">
