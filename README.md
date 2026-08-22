@@ -14,3 +14,8 @@ Se você tiver a CLI do .NET, basta rodar na pasta do projeto:
 dotnet run
 ```
 
+Se não funcionar, pode ser necessário rodar:
+
+```bash
+dotnet restore
+```
