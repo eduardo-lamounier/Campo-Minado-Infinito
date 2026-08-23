@@ -9,7 +9,7 @@ namespace CampoMinado.Core;
 /// <param name="nearBombs">
 ///   Representa a quantidade de bombas adjacentes. É zero por padrão.
 /// </param>
-public record class SafeCell(int nearBombs = 0) : Cell
+public record class SafeCell : Cell
 {
   /// <summary>
   /// Representa a quantidade de células com bomba perto dessa célula.
@@ -31,5 +31,10 @@ public record class SafeCell(int nearBombs = 0) : Cell
 
       field = value;
     }
-  } = nearBombs;
+  }
+
+  public SafeCell(int nearBombs = 0)
+  {
+    NearBombs = nearBombs;
+  }
 }
