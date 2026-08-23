@@ -1,6 +1,6 @@
 using CampoMinado.Core;
 using CampoMinado.Rendering;
-using CampoMinado.src;
+using CampoMinado.Saves;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;

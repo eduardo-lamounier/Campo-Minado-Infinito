@@ -1,7 +1,7 @@
 using System.Text.Json;
 using CampoMinado.Core;
 
-namespace CampoMinado.src;
+namespace CampoMinado.Saves;
 
 /// <summary>
 /// Classe responsável pela serialização do mapa.
@@ -74,7 +74,7 @@ public sealed class MineFieldSerializer
   }
 
   /// <summary>
-  /// Desserializa o campo do mapa e exclui ele do arquivo JSON 
+  /// Desserializa o campo do mapa e exclui ele do arquivo JSON
   /// </summary>
   /// <returns> Retorna o Campo do mapa que estava serializado </returns>
   /// <exception cref="InvalidOperationException">
