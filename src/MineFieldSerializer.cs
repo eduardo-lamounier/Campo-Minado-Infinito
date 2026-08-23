@@ -26,7 +26,7 @@ public sealed class MineFieldSerializer
   /// </summary>
   public MineField Field { get; private set; }
 
-  private readonly JsonSerializerOptions Options = new() { WriteIndented = true };
+  private readonly JsonSerializerOptions Options = new() { WriteIndented = false };
 
   private readonly string Filename = Path.Combine(
     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -43,8 +43,6 @@ public sealed class MineFieldSerializer
     if (s_instance == null)
     {
       s_instance = new MineFieldSerializer(field);
-
-      _ = File.Create(s_instance.Filename);
     }
 
     return s_instance;
@@ -101,6 +99,11 @@ public sealed class MineFieldSerializer
       throw new JsonException("O arquivo JSON está vazio. Não é possível desserializar.");
     }
 
-    return JsonSerializer.Deserialize<MineField>(content);
+    MineField? field = JsonSerializer.Deserialize<MineField>(content, s_instance.Options);
+
+    if (field is not null)
+      s_instance.Field = field;
+
+    return field;
   }
 }

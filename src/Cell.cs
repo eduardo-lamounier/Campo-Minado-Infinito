@@ -14,12 +14,14 @@ public abstract record class Cell
   /// Retorna verdadeiro caso a célula tenha uma bandeira tenha sido colocada pelo jogador
   /// falso caso contrário.
   /// </summary>
+  [JsonInclude]
   public bool HasFlag { get; private set; }
 
   /// <summary>
   /// Retorna verdadeiro caso a célula tenha sido revelada pelo jogador, ou falso caso
   /// contrário.
   /// </summary>
+  [JsonInclude]
   public bool IsRevealed { get; private set; }
 
   /// <summary>

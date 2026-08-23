@@ -135,17 +135,18 @@ public class MainGame : Game
       return;
     }
 
-    if (
-      GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-      || Keyboard.GetState().IsKeyDown(Keys.Escape)
-    )
+    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
       Exit();
 
     if (Keyboard.GetState().IsKeyDown(Keys.F4))
       MineFieldSerializer.Serialize();
 
     if (Keyboard.GetState().IsKeyDown(Keys.F5))
-      MineFieldSerializer.Deserialize();
+    {
+      var field = MineFieldSerializer.Deserialize();
+      if (field is not null)
+        Field = field;
+    }
 
     Console.Clear();
 
