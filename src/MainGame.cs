@@ -1,4 +1,6 @@
+using CampoMinado.Core;
 using CampoMinado.Rendering;
+using CampoMinado.src;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +37,8 @@ public class MainGame : Game
   /// </summary>
   public new ContentManager Content { get; private set; }
 
+  public MineField Field { get; private set; }
+
   /// <summary>
   /// Método chamado a todo frame. Contém lógica do programa que tem que ser
   /// atualizada a todo momento.
@@ -51,14 +55,23 @@ public class MainGame : Game
     )
       Exit();
 
-    //if (
-      //GamePad.GetState(PlayerIndex.One).Buttons.
-      //)
+    if (
+      Keyboard.GetState().IsKeyDown(Keys.F4)
+    )
+      MineFieldSerializer.Serialize();
+
+    if (
+      Keyboard.GetState().IsKeyDown(Keys.F5)
+    )
+      MineFieldSerializer.Deserialize();
 
     Console.Clear();
     Console.WriteLine("Tempo passado: " + gameTime.TotalGameTime);
     var fps = TimeSpan.FromSeconds(1) / gameTime.ElapsedGameTime;
     Console.WriteLine("FPS (aproximado): " + fps);
+
+    // TODO: Implementar lógica de jogo: revelação de células, posicionamento de bandeiras
+    // etc
 
     base.Update(gameTime);
   }
@@ -73,6 +86,8 @@ public class MainGame : Game
   protected override void Draw(GameTime gameTime)
   {
     GraphicsDevice.Clear(Color.CornflowerBlue);
+
+    // TODO: Desenhar o campo minado carregado
 
     base.Draw(gameTime);
   }
@@ -90,6 +105,8 @@ public class MainGame : Game
   /// </remarks>
   protected override void Initialize()
   {
+    // TODO: Carregar o campo minado do arquivo caso ele exista.
+
     base.Initialize();
   }
 
@@ -127,5 +144,8 @@ public class MainGame : Game
 
     GraphicsDevice = base.GraphicsDevice;
     SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+    Field = new();
+    MineFieldSerializer.GetInstance(Field);
   }
 }
