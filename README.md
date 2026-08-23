@@ -2,7 +2,9 @@
 
 Trabalho de segundo trimestre do segundo ano do COLTEC para a disciplina de programação orientada a objetos.
 
-![Demonstração do jogo rodando](.github/demo.gif)
+<p align="center">
+  <img src=".github/demo.gif" alt="Demonstração do jogo rodando" width="600">
+</p>
 
 ## Observações
 
