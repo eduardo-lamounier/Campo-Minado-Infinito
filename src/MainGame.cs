@@ -107,7 +107,8 @@ public class MainGame : Game
     );
 
     foreach (var c in region)
-      c.Reveal();
+      if (!c.HasFlag)
+        c.Reveal();
   }
 
   /// <summary>
