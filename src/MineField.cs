@@ -10,6 +10,15 @@ namespace CampoMinado.Core;
 public class MineField
 {
   /// <summary>
+  /// Versão da classe
+  /// </summary> 
+  /// <remarks> 
+  /// Serve para diferenciar as classes na desserialização
+  /// fazendo com que não haja conflito.
+  /// </remarks>
+  private readonly static string UIDVersion = "1.0";
+
+  /// <summary>
   /// Quantidade padrão de bombas por célula.
   /// </summary>
   public const double DEFAULT_BOMB_DENSITY = 0.3;
