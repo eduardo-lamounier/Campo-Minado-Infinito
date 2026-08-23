@@ -8,20 +8,24 @@ namespace CampoMinado.src;
 /// </summary>
 public sealed class Serializable
 {
-    /// <summary>
-    /// Privado para não haver perigo de haver duas instâncias
-    /// </summary>
-    private Serializable() { }
+  /// <summary>
+  /// Privado para não haver perigo de haver duas instâncias
+  /// </summary>
+  private Serializable() { }
 
-    /// <summary>
-    /// Única instância da classe
-    /// </summary>
-    private static Serializable _instance;
-    
-    /// <summary>
-    /// O campo que será serializado e deserializado
-    /// </summary>
-    public MineField Field { get; private set; }
+  /// <summary>
+  /// Única instância da classe
+  /// </summary>
+  private static Serializable _instance;
+
+  /// <summary>
+  /// O campo que será serializado e deserializado
+  /// </summary>
+  public MineField Field { get; private set; }
+
+  private readonly JsonSerializerOptions Options = new() { WriteIndented = true };
+
+  private readonly string Filename = "MineField.json";
 
     /// <summary>
     /// Retorna a instância da classe.
@@ -37,11 +41,25 @@ public sealed class Serializable
         return _instance;
     }
 
-    public void Serialize(MineField field)
+  /// <summary>
+  /// Serializa o mapa, adicionando ele no arquivo JSON MineField.json
+  /// </summary>
+    public static void Serialize()
     {
-        string filename = "MineField.json";
-        string serialization = JsonSerializer.Serialize(field);
+        var option = _instance.Options;
+        string serialization = JsonSerializer.Serialize(_instance.Field, option);
 
-        File.WriteAllText(filename, serialization);
+        File.WriteAllText(_instance.Filename, serialization);
     }
+  
+  /// <summary>
+  /// Deserializa o campo do mapa
+  /// </summary>
+  /// <returns> Retorna o Campo do mapa que estava serializado </returns>
+  public static MineField? Deserialize()
+  {
+    string deseralization = File.ReadAllText(_instance.Filename);
+
+    return JsonSerializer.Deserialize<MineField>(deseralization);
+  }
 }
