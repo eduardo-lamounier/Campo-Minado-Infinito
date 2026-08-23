@@ -216,11 +216,11 @@ public class MineField
   /// </remarks>
   public Cell[,] GetRegion(int positionX, int positionY, uint width, uint height)
   {
-    var region = new Cell[width, height];
+    var region = new Cell[height, width];
 
     for (int i = 0; i < height; i++)
       for (int j = 0; j < width; j++)
-        region[i, j] = At(positionX + i, positionY - j);
+        region[i, j] = At(positionX + j, positionY - i);
 
     return region;
   }
