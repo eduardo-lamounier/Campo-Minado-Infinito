@@ -1,5 +1,6 @@
 using CampoMinado.Core;
 using CampoMinado.Rendering;
+using CampoMinado.src;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,7 @@ public class MainGame : Game
 {
   public static void Main() => new MainGame("Campo Minado Infinito", 1280, 720).Run();
 
-  private MineField Field { get; set; }
+  public MineField Field { get; private set; }
 
   private MineFieldRenderer FieldRenderer { get; set; }
 
@@ -84,10 +85,15 @@ public class MainGame : Game
     )
       Exit();
 
-    /* TODO: Checar pelos atalhos:
-     * - F5: Salvar o estado do campo minado no arquivo de salvamento.
-     * - F4: Reiniciar o campo minado.
-     */
+    if (
+      Keyboard.GetState().IsKeyDown(Keys.F4)
+    )
+      MineFieldSerializer.Serialize();
+
+    if (
+      Keyboard.GetState().IsKeyDown(Keys.F5)
+    )
+      MineFieldSerializer.Deserialize();
 
     Console.Clear();
 
@@ -281,9 +287,11 @@ public class MainGame : Game
   /// </param>
   public MainGame(string title, int width, int height)
   {
-    Graphics = new(this);
-    Graphics.PreferredBackBufferWidth = width;
-    Graphics.PreferredBackBufferHeight = height;
+    Graphics = new(this)
+    {
+      PreferredBackBufferWidth = width,
+      PreferredBackBufferHeight = height
+    };
 
     Graphics.ApplyChanges();
 
@@ -298,5 +306,6 @@ public class MainGame : Game
     SpriteBatch = new SpriteBatch(GraphicsDevice);
     Field = new(0.15);
     FieldRenderer = new(Content);
+    MineFieldSerializer.GetInstance(Field);
   }
 }

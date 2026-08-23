@@ -39,6 +39,8 @@ public sealed class MineFieldSerializer
     if (s_instance == null)
     {
       s_instance = new MineFieldSerializer(field);
+
+      _ = File.Create(s_instance.Filename);
     }
 
     return s_instance;
@@ -50,11 +52,19 @@ public sealed class MineFieldSerializer
   /// <exception cref="InvalidOperationException">
   /// Lançada caso o serializador não tenha sido inicializado.
   /// </exception>
+  /// <exception cref="FileNotFoundException">
+  /// Lançada caso o arquivo JSON não possa ser encontrado.
+  /// </exception>
   public static void Serialize()
   {
     if (s_instance is null)
     {
       throw new InvalidOperationException("O serializador não foi inicializado.");
+    }
+
+    if (File.Exists(s_instance.Filename))
+    {
+      throw new FileNotFoundException("O arquivo JSON não foi encontrado.");
     }
 
     var option = s_instance.Options;
@@ -64,17 +74,36 @@ public sealed class MineFieldSerializer
   }
 
   /// <summary>
-  /// Deserializa o campo do mapa
+  /// Desserializa o campo do mapa e exclui ele do arquivo JSON 
   /// </summary>
   /// <returns> Retorna o Campo do mapa que estava serializado </returns>
   /// <exception cref="InvalidOperationException">
   /// Lançada caso o serializador não tenha sido inicializado.
+  /// </exception>
+  /// <exception cref="FileNotFoundException">
+  /// Lançada caso o arquivo JSON não possa ser encontrado.
+  /// </exception>
+  /// <exception cref="JsonException">
+  /// Lançada quando o arquivo JSON está vazio.
   /// </exception>
   public static MineField? Deserialize()
   {
     if (s_instance is null)
     {
       throw new InvalidOperationException("O serializador não foi inicializado.");
+    }
+
+    if (File.Exists(s_instance.Filename))
+    {
+      throw new FileNotFoundException("O arquivo JSON não foi encontrado.");
+    }
+
+    string? content = File.ReadAllText(s_instance.Filename);
+    bool haveContent = !string.IsNullOrWhiteSpace(content);
+
+    if (!haveContent)
+    {
+      throw new JsonException("O arquivo JSON está vazio. Não é possível desserializar.");
     }
 
     string deseralization = File.ReadAllText(s_instance.Filename);
