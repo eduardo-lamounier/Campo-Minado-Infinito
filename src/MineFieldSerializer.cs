@@ -74,7 +74,7 @@ public sealed class MineFieldSerializer
   }
 
   /// <summary>
-  /// Deserializa o campo do mapa
+  /// Desserializa o campo do mapa e exclui ele do arquivo JSON 
   /// </summary>
   /// <returns> Retorna o Campo do mapa que estava serializado </returns>
   /// <exception cref="InvalidOperationException">
@@ -82,6 +82,9 @@ public sealed class MineFieldSerializer
   /// </exception>
   /// <exception cref="FileNotFoundException">
   /// Lançada caso o arquivo JSON não possa ser encontrado.
+  /// </exception>
+  /// <exception cref="JsonException">
+  /// Lançada quando o arquivo JSON está vazio.
   /// </exception>
   public static MineField? Deserialize()
   {
@@ -93,6 +96,14 @@ public sealed class MineFieldSerializer
     if (File.Exists(s_instance.Filename))
     {
       throw new FileNotFoundException("O arquivo JSON não foi encontrado.");
+    }
+
+    string? content = File.ReadAllText(s_instance.Filename);
+    bool haveContent = !string.IsNullOrWhiteSpace(content);
+
+    if (!haveContent)
+    {
+      throw new JsonException("O arquivo JSON está vazio. Não é possível desserializar.");
     }
 
     string deseralization = File.ReadAllText(s_instance.Filename);
