@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using CampoMinado.Core;
-using CampoMinado.Core.Exceptions;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
