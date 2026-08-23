@@ -16,6 +16,7 @@ public class MineField
   /// Serve para diferenciar as classes na desserialização
   /// fazendo com que não haja conflito.
   /// </remarks>
+  [JsonInclude]
   private readonly static string UIDVersion = "1.0";
 
   /// <summary>

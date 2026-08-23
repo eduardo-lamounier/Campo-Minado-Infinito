@@ -51,6 +51,10 @@ public class MainGame : Game
     )
       Exit();
 
+    //if (
+      //GamePad.GetState(PlayerIndex.One).Buttons.
+      //)
+
     Console.Clear();
     Console.WriteLine("Tempo passado: " + gameTime.TotalGameTime);
     var fps = TimeSpan.FromSeconds(1) / gameTime.ElapsedGameTime;
