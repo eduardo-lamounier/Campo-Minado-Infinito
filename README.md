@@ -8,6 +8,14 @@ O projeto é em C#, em constraste com as [instruções do trabalho](<https://git
 
 ## Execução
 
+Você pode baixar tudo necessário para rodar o programa [aqui](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/releases/tag/1.0.0>).
+
+Caso você queira compilar você mesmo, clone o projeto:
+
+```bash
+git clone https://github.com/eduardo-lamounier/Campo-Minado-Infinito.git
+```
+
 Se você tiver a CLI do .NET, basta rodar na pasta do projeto:
 
 ```bash
