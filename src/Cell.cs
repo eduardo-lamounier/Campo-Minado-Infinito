@@ -1,10 +1,13 @@
 using CampoMinado.Core.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace CampoMinado.Core;
 
 /// <summary>
 /// Representa uma célula genérica ou não inicializada do campo minado.
 /// </summary>
+[JsonDerivedType(typeof(SafeCell), "safe")]
+[JsonDerivedType(typeof(DangerousCell), "dangerous")]
 public abstract record class Cell
 {
   /// <summary>

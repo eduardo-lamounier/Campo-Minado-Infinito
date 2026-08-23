@@ -28,7 +28,11 @@ public sealed class MineFieldSerializer
 
   private readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
-  private readonly string Filename = "MineField.json";
+  private readonly string Filename = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+    "Campo-Minado-Infinito",
+    "MineField.json"
+  );
 
   /// <summary>
   /// Retorna a instância da classe.
@@ -52,9 +56,6 @@ public sealed class MineFieldSerializer
   /// <exception cref="InvalidOperationException">
   /// Lançada caso o serializador não tenha sido inicializado.
   /// </exception>
-  /// <exception cref="FileNotFoundException">
-  /// Lançada caso o arquivo JSON não possa ser encontrado.
-  /// </exception>
   public static void Serialize()
   {
     if (s_instance is null)
@@ -62,10 +63,7 @@ public sealed class MineFieldSerializer
       throw new InvalidOperationException("O serializador não foi inicializado.");
     }
 
-    if (File.Exists(s_instance.Filename))
-    {
-      throw new FileNotFoundException("O arquivo JSON não foi encontrado.");
-    }
+    Directory.CreateDirectory(Path.GetDirectoryName(s_instance.Filename)!);
 
     var option = s_instance.Options;
     string serialization = JsonSerializer.Serialize(s_instance.Field, option);
@@ -76,12 +74,9 @@ public sealed class MineFieldSerializer
   /// <summary>
   /// Desserializa o campo do mapa e exclui ele do arquivo JSON
   /// </summary>
-  /// <returns> Retorna o Campo do mapa que estava serializado </returns>
+  /// <returns> Retorna o Campo do mapa que estava serializado, ou null se o arquivo não existir </returns>
   /// <exception cref="InvalidOperationException">
   /// Lançada caso o serializador não tenha sido inicializado.
-  /// </exception>
-  /// <exception cref="FileNotFoundException">
-  /// Lançada caso o arquivo JSON não possa ser encontrado.
   /// </exception>
   /// <exception cref="JsonException">
   /// Lançada quando o arquivo JSON está vazio.
@@ -93,9 +88,9 @@ public sealed class MineFieldSerializer
       throw new InvalidOperationException("O serializador não foi inicializado.");
     }
 
-    if (File.Exists(s_instance.Filename))
+    if (!File.Exists(s_instance.Filename))
     {
-      throw new FileNotFoundException("O arquivo JSON não foi encontrado.");
+      return null;
     }
 
     string? content = File.ReadAllText(s_instance.Filename);
@@ -106,8 +101,6 @@ public sealed class MineFieldSerializer
       throw new JsonException("O arquivo JSON está vazio. Não é possível desserializar.");
     }
 
-    string deseralization = File.ReadAllText(s_instance.Filename);
-
-    return JsonSerializer.Deserialize<MineField>(deseralization);
+    return JsonSerializer.Deserialize<MineField>(content);
   }
 }

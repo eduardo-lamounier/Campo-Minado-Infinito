@@ -34,11 +34,24 @@ public class MineField
   /// </summary>
   private class Chunk
   {
-    private Cell[,] _cells = new Cell[16, 16];
+    [JsonInclude]
+    private Cell[][] _cells = CreateEmptyCells();
 
-    public ref Cell At(uint x, uint y) => ref _cells[y, x];
+    private static Cell[][] CreateEmptyCells()
+    {
+      var cells = new Cell[16][];
+      for (int i = 0; i < 16; i++)
+        cells[i] = new Cell[16];
 
-    public ref Cell At((uint X, uint Y) pos) => ref _cells[pos.Y, pos.X];
+      return cells;
+    }
+
+    public ref Cell At(uint x, uint y) => ref _cells[y][x];
+
+    public ref Cell At((uint X, uint Y) pos) => ref _cells[pos.Y][pos.X];
+
+    [JsonConstructor]
+    private Chunk() { }
 
     // Inicializa o grid escolhendo posições aleatórias para conter bombas
     public Chunk(double bombDensity)
@@ -64,7 +77,10 @@ public class MineField
   /// interagindo com o jogador.
   /// </summary>
   [JsonInclude]
-  private Dictionary<(int X, int Y), Chunk> _chunks = [];
+  private Dictionary<string, Chunk> _chunks = [];
+
+  private static string ChunkKey((int X, int Y) chunkPosition) =>
+    $"{chunkPosition.X},{chunkPosition.Y}";
 
   /// <summary>
   /// Armazena a quantidade de chunks geradas até então no campo minado.
@@ -83,8 +99,8 @@ public class MineField
   /// </summary>
   private Chunk ChunkAt((int X, int Y) chunkPosition)
   {
-    _chunks.TryAdd(chunkPosition, new Chunk(BombDensity));
-    return _chunks[chunkPosition];
+    _chunks.TryAdd(ChunkKey(chunkPosition), new Chunk(BombDensity));
+    return _chunks[ChunkKey(chunkPosition)];
   }
 
   /// <summary>
@@ -181,12 +197,12 @@ public class MineField
   public bool InitializedAt((int X, int Y) pos)
   {
     var chunkPosition = ChunkPositionFrom(pos);
-    if (!_chunks.ContainsKey(chunkPosition))
+    if (!_chunks.ContainsKey(ChunkKey(chunkPosition)))
       return false;
 
     var inChunkPosition = InChunkPositionFrom(pos);
 
-    var chunk = _chunks[chunkPosition];
+    var chunk = _chunks[ChunkKey(chunkPosition)];
     var cell = chunk.At(inChunkPosition);
 
     return cell is DangerousCell || cell is SafeCell;
