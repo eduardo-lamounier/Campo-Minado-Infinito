@@ -15,8 +15,14 @@ public class MainGame : Game
 {
   public static void Main() => new MainGame("Campo Minado Infinito", 1280, 720).Run();
 
+  /// <summary>
+  /// Armazena o estado do campo minado da sessão de jogo atual
+  /// </summary>
   public MineField Field { get; private set; }
 
+  /// <summary>
+  /// Responsável por renderizar as células do <see cref="MineField"/> na tela.
+  /// </summary>
   private MineFieldRenderer FieldRenderer { get; set; }
 
   /// <summary>
@@ -41,7 +47,7 @@ public class MainGame : Game
   /// </summary>
   public new ContentManager Content { get; private set; }
 
-  private (int X, int Y) _currentPosition = (0,0);
+  private (int X, int Y) _currentPosition = (0, 0);
 
   private const uint _baseSpriteSize = 16; // Todo sprite é 16x16 pixels
   private const float _spriteScaling = 2;
@@ -50,20 +56,34 @@ public class MainGame : Game
   private KeyboardState _previousKeyboardState = new();
   private MouseState _previousMouseState = new();
 
-  private bool _gameOver = false;
-  
+  public bool GameOver { get; private set; }
+
   private void RevealCellWithZeroNearBombs(int x, int y)
   {
     Field.At(x, y).Reveal();
 
-    for(int dx = -1; dx <= 1; dx++)
-      for(int dy = -1; dy <= 1; dy++) {
+    for (int dx = -1; dx <= 1; dx++)
+      for (int dy = -1; dy <= 1; dy++)
+      {
         var cell = (SafeCell)Field.At(x + dx, y + dy);
+
         if (cell.NearBombs == 0 && !cell.IsRevealed)
           RevealCellWithZeroNearBombs(x + dx, y + dy);
         else
           cell.Reveal();
       }
+  }
+
+  private void RevealAll()
+  {
+    Cell[,] region = Field.GetRegion(
+      _currentPosition,
+      (uint)Window.ClientBounds.Width / SpriteSize,
+      (uint)Window.ClientBounds.Height
+    );
+
+    foreach (var c in region)
+      c.Reveal();
   }
 
   /// <summary>
@@ -76,23 +96,19 @@ public class MainGame : Game
   /// </remarks>
   protected override void Update(GameTime gameTime)
   {
-    if(_gameOver)
+    if (GameOver)
       Exit();
 
     if (
-        GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-        || Keyboard.GetState().IsKeyDown(Keys.Escape)
+      GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+      || Keyboard.GetState().IsKeyDown(Keys.Escape)
     )
       Exit();
 
-    if (
-      Keyboard.GetState().IsKeyDown(Keys.F4)
-    )
+    if (Keyboard.GetState().IsKeyDown(Keys.F4))
       MineFieldSerializer.Serialize();
 
-    if (
-      Keyboard.GetState().IsKeyDown(Keys.F5)
-    )
+    if (Keyboard.GetState().IsKeyDown(Keys.F5))
       MineFieldSerializer.Deserialize();
 
     Console.Clear();
@@ -102,41 +118,35 @@ public class MainGame : Game
     var fps = TimeSpan.FromSeconds(1) / gameTime.ElapsedGameTime;
     Console.WriteLine("FPS (aproximado): " + fps);
 
+    Console.WriteLine("Chunks geradas: " + Field.GeneratedChunksCount);
+
     // =========================
     // MOVIMENTAÇÃO DO MAPA
     // =========================
 
-    KeyboardState keyboard = Keyboard.GetState();
+    var keyboard = Keyboard.GetState();
 
-    if (_previousKeyboardState.IsKeyUp(Keys.W)
-      || _previousKeyboardState.IsKeyUp(Keys.A)
-      || _previousKeyboardState.IsKeyUp(Keys.S) 
-      || _previousKeyboardState.IsKeyUp(Keys.D)
-    )
+    if (keyboard.IsKeyDown(Keys.W) && _previousKeyboardState.IsKeyUp(Keys.W))
     {
-      if (keyboard.IsKeyDown(Keys.W))
-      {
-        _currentPosition.Y += (int)(Window.ClientBounds.Height / SpriteSize);
-      }
-      else if (keyboard.IsKeyDown(Keys.A))
-      {
-        _currentPosition.X -= (int)(Window.ClientBounds.Width / SpriteSize);
-      }
-      else if (keyboard.IsKeyDown(Keys.S))
-      {
-        _currentPosition.Y -= (int)(Window.ClientBounds.Height / SpriteSize);
-      }
-      else if (keyboard.IsKeyDown(Keys.D))
-      {
-        _currentPosition.X += (int)(Window.ClientBounds.Width / SpriteSize);
-      }
-      _previousKeyboardState = Keyboard.GetState();
+      _currentPosition.Y += (int)(Window.ClientBounds.Height / SpriteSize);
+    }
+    else if (keyboard.IsKeyDown(Keys.A) && _previousKeyboardState.IsKeyUp(Keys.A))
+    {
+      _currentPosition.X -= (int)(Window.ClientBounds.Width / SpriteSize);
+    }
+    else if (keyboard.IsKeyDown(Keys.S) && _previousKeyboardState.IsKeyUp(Keys.S))
+    {
+      _currentPosition.Y -= (int)(Window.ClientBounds.Height / SpriteSize);
+    }
+    else if (keyboard.IsKeyDown(Keys.D) && _previousKeyboardState.IsKeyUp(Keys.D))
+    {
+      _currentPosition.X += (int)(Window.ClientBounds.Width / SpriteSize);
     }
 
+    _previousKeyboardState = keyboard;
+
     Console.WriteLine(
-        "Posição atual (x, y): "
-        + _currentPosition.X + ", "
-        + _currentPosition.Y
+      "Posição atual (x, y): " + _currentPosition.X + ", " + _currentPosition.Y
     );
 
     // =========================
@@ -148,25 +158,19 @@ public class MainGame : Game
     int x = _currentPosition.X + mouse.X / (int)SpriteSize;
     int y = _currentPosition.Y - mouse.Y / (int)SpriteSize;
 
-    if (mouse.LeftButton == ButtonState.Pressed &&
-        _previousMouseState.LeftButton == ButtonState.Released)
+    if (
+      mouse.LeftButton == ButtonState.Pressed
+      && _previousMouseState.LeftButton == ButtonState.Released
+    )
     {
       Cell cell = Field.At(x, y);
 
-      if(!cell.HasFlag && cell is DangerousCell)
+      // Game over:
+      if (!cell.HasFlag && cell is DangerousCell)
       {
-        // Gameover
-        _gameOver = true;
+        GameOver = true;
 
         // Revela todas as células atualmente visíveis:
-        foreach (var c in Field.GetRegion(
-                            _currentPosition.X,
-                            _currentPosition.Y,
-                            (uint)Window.ClientBounds.Width / SpriteSize,
-                            (uint)Window.ClientBounds.Height / SpriteSize
-                          )
-        )
-          c.Reveal();
 
         Console.WriteLine("GAME OVER!");
         return;
@@ -182,32 +186,30 @@ public class MainGame : Game
       }
     }
 
-    if (mouse.RightButton == ButtonState.Pressed &&
-        _previousMouseState.RightButton == ButtonState.Released)
+    if (
+      mouse.RightButton == ButtonState.Pressed
+      && _previousMouseState.RightButton == ButtonState.Released
+    )
     {
-        Cell cell = Field.At(x, y);
+      Cell cell = Field.At(x, y);
 
-        if (!cell.IsRevealed)
+      if (!cell.IsRevealed)
+      {
+        if (cell.HasFlag)
         {
-            if (cell.HasFlag)
-            {
-                // Remove a bandeira
-                cell.EnsureNoFlag();
-            }
-            else
-            {
-                // Coloca a bandeira
-                cell.EnsureFlag();
-            }
+          cell.EnsureNoFlag();
         }
+        else
+        {
+          cell.EnsureFlag();
+        }
+      }
     }
 
-    // Guarda o estado atual do mouse
-    // para detectar somente o momento do clique
     _previousMouseState = mouse;
 
     base.Update(gameTime);
-}
+  }
 
   /// <summary>
   /// Método chamado a todo frame. Contém lógica de renderização do programa.
@@ -235,9 +237,10 @@ public class MainGame : Game
     {
       for (int j = 0; j < n; j++)
       {
-        Sprite sprite = FieldRenderer.RenderCell(region[i, j])
-                          .WithScale(_spriteScaling)
-                          .WithPosition(SpriteSize*j , SpriteSize*i); 
+        Sprite sprite = FieldRenderer
+          .RenderCell(region[i, j])
+          .WithScale(_spriteScaling)
+          .WithPosition(SpriteSize * j, SpriteSize * i);
         sprite.Draw(SpriteBatch);
       }
     }
@@ -290,7 +293,7 @@ public class MainGame : Game
     Graphics = new(this)
     {
       PreferredBackBufferWidth = width,
-      PreferredBackBufferHeight = height
+      PreferredBackBufferHeight = height,
     };
 
     Graphics.ApplyChanges();
