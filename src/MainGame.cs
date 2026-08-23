@@ -1,3 +1,4 @@
+using CampoMinado.Core;
 using CampoMinado.Rendering;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,6 +13,8 @@ namespace CampoMinado;
 public class MainGame : Game
 {
   public static void Main() => new MainGame("Campo Minado Infinito", 1280, 720).Run();
+
+  private MineField Field { get; set; }
 
   /// <summary>
   /// Gerencia as configurações relacionadas aos gráficos e à janela do programa.
@@ -51,10 +54,18 @@ public class MainGame : Game
     )
       Exit();
 
+    /* TODO: Checar pelos atalhos:
+     * - F5: Salvar o estado do campo minado no arquivo de salvamento.
+     * - F4: Reiniciar o campo minado.
+     */
+
     Console.Clear();
     Console.WriteLine("Tempo passado: " + gameTime.TotalGameTime);
     var fps = TimeSpan.FromSeconds(1) / gameTime.ElapsedGameTime;
     Console.WriteLine("FPS (aproximado): " + fps);
+
+    // TODO: Implementar lógica de jogo: revelação de células, posicionamento de bandeiras
+    // etc
 
     base.Update(gameTime);
   }
@@ -69,6 +80,8 @@ public class MainGame : Game
   protected override void Draw(GameTime gameTime)
   {
     GraphicsDevice.Clear(Color.CornflowerBlue);
+
+    // TODO: Desenhar o campo minado carregado
 
     base.Draw(gameTime);
   }
@@ -86,6 +99,8 @@ public class MainGame : Game
   /// </remarks>
   protected override void Initialize()
   {
+    // TODO: Carregar o campo minado do arquivo caso ele exista.
+
     base.Initialize();
   }
 
@@ -123,5 +138,6 @@ public class MainGame : Game
 
     GraphicsDevice = base.GraphicsDevice;
     SpriteBatch = new SpriteBatch(GraphicsDevice);
+    Field = new();
   }
 }
