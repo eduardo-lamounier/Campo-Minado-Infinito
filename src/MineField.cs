@@ -1,4 +1,5 @@
 using CampoMinado.Core.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace CampoMinado.Core;
 
@@ -52,6 +53,7 @@ public class MineField
   /// Armazena as chunks inicializadas - ou seja, aquelas na quão tiveram alguma célula
   /// interagindo com o jogador.
   /// </summary>
+  [JsonInclude]
   private Dictionary<(int X, int Y), Chunk> _chunks = [];
 
   /// <summary>
