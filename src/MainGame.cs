@@ -47,10 +47,18 @@ public class MainGame : Game
   /// </summary>
   public new ContentManager Content { get; private set; }
 
+  /// <summary>
+  /// Armazena o início da região retangular atualmente sendo exibida na tela do
+  /// jogador.
+  /// </summary>
   private (int X, int Y) _currentPosition = (0, 0);
 
   private const uint _baseSpriteSize = 16; // Todo sprite é 16x16 pixels
   private const float _spriteScaling = 2;
+
+  /// <summary>
+  /// Retorna o tamanho dos sprites da célula levando em consideração o "zoom" atual.
+  /// </summary>
   private static uint SpriteSize => (uint)(_baseSpriteSize * _spriteScaling);
 
   private KeyboardState _previousKeyboardState = new();
@@ -58,7 +66,20 @@ public class MainGame : Game
 
   public bool GameOver { get; private set; }
 
-  private void RevealCellWithZeroNearBombs(int x, int y)
+  /// <summary>
+  /// Revela recursivamente a região de células vazias adjacentes a partir de
+  /// (<paramref name="x"/>, <paramref name="y"/>).
+  /// </summary>
+  /// <remarks>
+  /// Chamado quando a célula clicada não possui bombas adjacentes
+  /// (<see cref="SafeCell.NearBombs"/> == 0).
+  ///
+  /// Revela a célula inicial e, para célula adjacente, continua expandindo
+  /// se ela também for vazia e ainda não estiver revelada (flood fill);
+  /// caso contrário, apenas revela a célula sem expandir — células numeradas
+  /// na borda da região.
+  /// </remarks>
+  private void RevealEmpty(int x, int y)
   {
     Field.At(x, y).Reveal();
 
@@ -68,12 +89,15 @@ public class MainGame : Game
         var cell = (SafeCell)Field.At(x + dx, y + dy);
 
         if (cell.NearBombs == 0 && !cell.IsRevealed)
-          RevealCellWithZeroNearBombs(x + dx, y + dy);
+          RevealEmpty(x + dx, y + dy);
         else
           cell.Reveal();
       }
   }
 
+  /// <summary>
+  /// Revela todas as células da região atual
+  /// </summary>
   private void RevealAll()
   {
     Cell[,] region = Field.GetRegion(
@@ -97,7 +121,19 @@ public class MainGame : Game
   protected override void Update(GameTime gameTime)
   {
     if (GameOver)
-      Exit();
+    {
+      var gameOverKeyboard = Keyboard.GetState();
+      foreach (var key in gameOverKeyboard.GetPressedKeys())
+      {
+        if (_previousKeyboardState.IsKeyUp(key))
+        {
+          Exit();
+          return;
+        }
+      }
+      _previousKeyboardState = gameOverKeyboard;
+      return;
+    }
 
     if (
       GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
@@ -120,9 +156,7 @@ public class MainGame : Game
 
     Console.WriteLine("Chunks geradas: " + Field.GeneratedChunksCount);
 
-    // =========================
-    // MOVIMENTAÇÃO DO MAPA
-    // =========================
+    // Movimentação do mapa:
 
     var keyboard = Keyboard.GetState();
 
@@ -149,9 +183,7 @@ public class MainGame : Game
       "Posição atual (x, y): " + _currentPosition.X + ", " + _currentPosition.Y
     );
 
-    // =========================
-    // MOUSE
-    // =========================
+    // Interação com o mouse:
 
     MouseState mouse = Mouse.GetState();
 
@@ -169,9 +201,7 @@ public class MainGame : Game
       if (!cell.HasFlag && cell is DangerousCell)
       {
         GameOver = true;
-
-        // Revela todas as células atualmente visíveis:
-
+        RevealAll();
         Console.WriteLine("GAME OVER!");
         return;
       }
@@ -180,7 +210,7 @@ public class MainGame : Game
       {
         var safeCell = (SafeCell)cell;
         if (safeCell.NearBombs == 0)
-          RevealCellWithZeroNearBombs(x, y);
+          RevealEmpty(x, y);
         else
           safeCell.Reveal();
       }
