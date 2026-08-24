@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CampoMinado.Core;
 using CampoMinado.Rendering;
 using CampoMinado.Saves;
@@ -81,6 +82,8 @@ public class MainGame : Game
   /// </remarks>
   private void RevealEmpty(int x, int y)
   {
+    Debug.Assert(Field.At(x, y) is SafeCell c && c.NearBombs == 0 && !c.HasFlag);
+
     Field.At(x, y).Reveal();
 
     for (int dx = -1; dx <= 1; dx++)
@@ -121,10 +124,13 @@ public class MainGame : Game
   /// </remarks>
   protected override void Update(GameTime gameTime)
   {
+    // Interação com o teclado:
+
+    var keyboard = Keyboard.GetState();
+
     if (GameOver)
     {
-      var gameOverKeyboard = Keyboard.GetState();
-      foreach (var key in gameOverKeyboard.GetPressedKeys())
+      foreach (var key in keyboard.GetPressedKeys())
       {
         if (_previousKeyboardState.IsKeyUp(key))
         {
@@ -132,11 +138,11 @@ public class MainGame : Game
           return;
         }
       }
-      _previousKeyboardState = gameOverKeyboard;
+      _previousKeyboardState = keyboard;
       return;
     }
 
-    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+    if (keyboard.IsKeyDown(Keys.Escape))
       Exit();
 
     if (Keyboard.GetState().IsKeyDown(Keys.F4) && _previousKeyboardState.IsKeyUp(Keys.F4))
@@ -151,7 +157,7 @@ public class MainGame : Game
 
     Console.Clear();
 
-    Console.WriteLine("Tempo passado: " + gameTime.TotalGameTime);
+    Console.WriteLine("Tempo de simulação: " + gameTime.TotalGameTime);
 
     var fps = TimeSpan.FromSeconds(1) / gameTime.ElapsedGameTime;
     Console.WriteLine("FPS (aproximado): " + fps);
@@ -159,8 +165,6 @@ public class MainGame : Game
     Console.WriteLine("Chunks geradas: " + Field.GeneratedChunksCount);
 
     // Movimentação do mapa:
-
-    var keyboard = Keyboard.GetState();
 
     if (keyboard.IsKeyDown(Keys.W) && _previousKeyboardState.IsKeyUp(Keys.W))
     {
@@ -182,7 +186,7 @@ public class MainGame : Game
     _previousKeyboardState = keyboard;
 
     Console.WriteLine(
-      "Posição atual (x, y): " + _currentPosition.X + ", " + _currentPosition.Y
+      $"Posição atual (x, y): ({_currentPosition.X},{_currentPosition.Y})"
     );
 
     // Interação com o mouse:
@@ -279,9 +283,6 @@ public class MainGame : Game
 
     SpriteBatch.End(); // Termina de desenhar na tela
 
-    // Sprite spriteCelula = FieldRenderer.RenderCell(region[i,j]);
-    // spriteCelula.Draw(SpriteBatch);
-
     base.Draw(gameTime);
   }
 
@@ -298,7 +299,7 @@ public class MainGame : Game
   /// </remarks>
   protected override void Initialize()
   {
-    // TODO: Carregar o campo minado do arquivo caso ele exista.
+    MineFieldSerializer.GetInstance(Field);
 
     base.Initialize();
   }
@@ -341,6 +342,5 @@ public class MainGame : Game
     SpriteBatch = new SpriteBatch(GraphicsDevice);
     Field = new(0.15);
     FieldRenderer = new(Content);
-    MineFieldSerializer.GetInstance(Field);
   }
 }
