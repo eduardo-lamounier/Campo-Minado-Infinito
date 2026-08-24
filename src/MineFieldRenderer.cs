@@ -11,12 +11,19 @@ namespace CampoMinado.Rendering;
 /// </summary>
 public class MineFieldRenderer(ContentManager content)
 {
+  /// <summary>
+  /// Gerencia o carregamento e o acesso aos assets do programa.
+  /// </summary>
   private ContentManager Content => content;
 
+  /// <summary>
+  /// Retorna a textura correspondente ao estado de uma célula.
+  /// </summary>
   private Texture2D TextureForCell(Cell cell)
   {
     Debug.Assert(Content.RootDirectory == "Content");
 
+    // Célula não-inicializada:
     if (cell is not SafeCell && cell is not DangerousCell)
       return Content.Load<Texture2D>("images/Cell_Unrevealed");
 
@@ -28,17 +35,19 @@ public class MineFieldRenderer(ContentManager content)
       return Content.Load<Texture2D>("images/Cell_Unrevealed");
     }
 
-    if (cell is DangerousCell)
-      return Content.Load<Texture2D>("images/Cell_Bomb");
+    if (cell is SafeCell safeCell)
+    {
+      var nearBombs = safeCell.NearBombs;
+      return Content.Load<Texture2D>($"images/Cell_{nearBombs}");
+    }
 
-    var nearBombs = ((SafeCell)cell).NearBombs;
-    return Content.Load<Texture2D>($"images/Cell_{nearBombs}");
+    return Content.Load<Texture2D>("images/Cell_Bomb");
   }
 
   /// <summary>
-  /// Retorna o sprite com textura correspondente à célula passada.
+  /// Retorna o sprite com textura correspondente ao estado da célula passada.
   ///
-  /// Todas os outros atributos do sprite são definidos como padrão, logo pode ser
+  /// Todos os outros atributos do sprite são definidos como padrão, logo pode ser
   /// necessário usar 'WithPosition', 'WithRotation' etc.
   /// </summary>
   public Sprite RenderCell(Cell cell)
