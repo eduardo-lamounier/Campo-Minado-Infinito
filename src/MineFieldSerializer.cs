@@ -28,6 +28,9 @@ public sealed class MineFieldSerializer
 
   private readonly JsonSerializerOptions Options = new() { WriteIndented = false };
 
+  /// <summary>
+  /// Path do arquivo JSON que armazena o estado do campo minado.
+  /// </summary>
   private readonly string Filename = Path.Combine(
     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
     "Campo-Minado-Infinito",
@@ -72,12 +75,14 @@ public sealed class MineFieldSerializer
   /// <summary>
   /// Desserializa o campo do mapa e exclui ele do arquivo JSON
   /// </summary>
-  /// <returns> Retorna o Campo do mapa que estava serializado, ou null se o arquivo não existir </returns>
+  /// <returns>
+  /// Retorna o Campo do mapa que estava serializado.
+  /// </returns>
+  /// <remarks>
+  /// Retorna <see cref="null"> caso o arquivo não exista ou caso ele esteja vazio.
+  /// </remarks>
   /// <exception cref="InvalidOperationException">
   /// Lançada caso o serializador não tenha sido inicializado.
-  /// </exception>
-  /// <exception cref="JsonException">
-  /// Lançada quando o arquivo JSON está vazio.
   /// </exception>
   public static MineField? Deserialize()
   {
@@ -96,7 +101,7 @@ public sealed class MineFieldSerializer
 
     if (!haveContent)
     {
-      throw new JsonException("O arquivo JSON está vazio. Não é possível desserializar.");
+      return null;
     }
 
     MineField? field = JsonSerializer.Deserialize<MineField>(content, s_instance.Options);
