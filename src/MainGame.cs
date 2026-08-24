@@ -55,12 +55,12 @@ public class MainGame : Game
   private (int X, int Y) _currentPosition = (0, 0);
 
   private const uint _baseSpriteSize = 16; // Todo sprite é 16x16 pixels
-  private const float _spriteScaling = 2;
+  private float _spriteScaling = 1.0f;
 
   /// <summary>
   /// Retorna o tamanho dos sprites da célula levando em consideração o "zoom" atual.
   /// </summary>
-  private static uint SpriteSize => (uint)(_baseSpriteSize * _spriteScaling);
+  private uint SpriteSize => (uint)(_baseSpriteSize * _spriteScaling);
 
   private KeyboardState _previousKeyboardState = new();
   private MouseState _previousMouseState = new();
@@ -183,11 +183,25 @@ public class MainGame : Game
       _currentPosition.X += (int)(Window.ClientBounds.Width / SpriteSize);
     }
 
-    _previousKeyboardState = keyboard;
-
     Console.WriteLine(
       $"Posição atual (x, y): ({_currentPosition.X},{_currentPosition.Y})"
     );
+
+    // Zoom-in:
+    if (keyboard.IsKeyDown(Keys.I) && _previousKeyboardState.IsKeyUp(Keys.I))
+    {
+      Console.WriteLine("aa");
+      _spriteScaling *= 1.5f;
+    }
+
+    // Zoom-out:
+    if (keyboard.IsKeyDown(Keys.O) && _previousKeyboardState.IsKeyUp(Keys.O))
+    {
+      Console.WriteLine("bb");
+      _spriteScaling /= 1.5f;
+    }
+
+    _previousKeyboardState = keyboard;
 
     // Interação com o mouse:
 
