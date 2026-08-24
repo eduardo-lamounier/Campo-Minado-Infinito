@@ -139,10 +139,10 @@ public class MainGame : Game
     if (Keyboard.GetState().IsKeyDown(Keys.Escape))
       Exit();
 
-    if (Keyboard.GetState().IsKeyDown(Keys.F4))
+    if (Keyboard.GetState().IsKeyDown(Keys.F4) && _previousKeyboardState.IsKeyUp(Keys.F4))
       MineFieldSerializer.Serialize();
 
-    if (Keyboard.GetState().IsKeyDown(Keys.F5))
+    if (Keyboard.GetState().IsKeyDown(Keys.F5) && _previousKeyboardState.IsKeyUp(Keys.F5))
     {
       var field = MineFieldSerializer.Deserialize();
       if (field is not null)
