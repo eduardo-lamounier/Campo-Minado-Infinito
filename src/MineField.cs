@@ -1,5 +1,5 @@
-using CampoMinado.Core.Exceptions;
 using System.Text.Json.Serialization;
+using CampoMinado.Core.Exceptions;
 
 namespace CampoMinado.Core;
 
@@ -11,13 +11,15 @@ public class MineField
 {
   /// <summary>
   /// Versão da classe
-  /// </summary> 
-  /// <remarks> 
+  /// </summary>
+  /// <remarks>
   /// Serve para diferenciar as classes na desserialização
   /// fazendo com que não haja conflito.
   /// </remarks>
   [JsonInclude]
-  private readonly static string UIDVersion = "1.0";
+#pragma warning disable CS0414 // Essa propriedade não precisa ser utilizada pelo código
+  private static readonly string UIDVersion = "1.0";
+#pragma warning restore CS0414
 
   /// <summary>
   /// Quantidade padrão de bombas por célula.
@@ -34,9 +36,17 @@ public class MineField
   /// </summary>
   private class Chunk
   {
+    /// <remarks>
+    /// Não podemos definir como uma matriz bidimensional, porque não seria
+    /// serializável. Aqui, definimos o conjunto de células como um array de array
+    /// exatamente para ser possível serializar.
+    /// </remarks>
     [JsonInclude]
     private Cell[][] _cells = CreateEmptyCells();
 
+    /// <summary>
+    /// Inicializa a chunk com 256 células
+    /// </summary>
     private static Cell[][] CreateEmptyCells()
     {
       var cells = new Cell[16][];
@@ -46,10 +56,28 @@ public class MineField
       return cells;
     }
 
+    /// <summary>
+    /// Retorna uma referência à célula em uma posição específica da chunk.
+    /// </summary>
+    /// <param name="x">
+    /// Posição horizontal da célula (entre 0 e 15).
+    /// </param>
+    /// <param name="y">
+    /// Posição vertical da célula (entre 0 e 15).
+    /// </param>
     public ref Cell At(uint x, uint y) => ref _cells[y][x];
 
+    /// <summary>
+    /// Retorna uma referência à célula em uma posição específica da chunk.
+    /// </summary>
+    /// <param name="pos">
+    /// Posição 2D dentro da chunk 16x16.
+    /// </param>
     public ref Cell At((uint X, uint Y) pos) => ref _cells[pos.Y][pos.X];
 
+    /// <remarks>
+    /// Serve apenas para deserialização.
+    /// </remarks>
     [JsonConstructor]
     private Chunk() { }
 
@@ -76,9 +104,16 @@ public class MineField
   /// Armazena as chunks inicializadas - ou seja, aquelas na quão tiveram alguma célula
   /// interagindo com o jogador.
   /// </summary>
+  /// <remarks>
+  /// Usa uma string como chave para permitir serialização.
+  /// </remarks>
   [JsonInclude]
   private Dictionary<string, Chunk> _chunks = [];
 
+  /// <summary>
+  /// Converte uma coordenada do mapa para uma string que sirva como
+  /// chave para <see cref="_chunks"/>
+  /// </summary>
   private static string ChunkKey((int X, int Y) chunkPosition) =>
     $"{chunkPosition.X},{chunkPosition.Y}";
 
@@ -229,17 +264,6 @@ public class MineField
   /// <param name="height">
   /// Altura (em quant. de células) da região. A região se extenderá para baixo.
   /// </param>
-  /// <remarks>
-  /// Matematicamente:
-  /// <list>
-  /// <item><description>
-  ///   as coordenadas X da região estão no intervalo `[positionX, positionX+width[`
-  /// </description></item>
-  /// <item><description>
-  ///   as coordenadas Y da região estão no intervalo `[positionY,positionY-height[`
-  /// </description></item>
-  /// </list>
-  /// </remarks>
   public Cell[,] GetRegion(int positionX, int positionY, uint width, uint height)
   {
     var region = new Cell[height, width];
@@ -263,17 +287,6 @@ public class MineField
   /// <param name="height">
   /// Altura (em quant. de células) da região. A região se extenderá para baixo.
   /// </param>
-  /// <remarks>
-  /// Matematicamente:
-  /// <list>
-  /// <item><description>
-  ///   as coordenadas X da região estão no intervalo `[position.X, position.X+width[`
-  /// </description></item>
-  /// <item><description>
-  ///   as coordenadas Y da região estão no intervalo `[position.Y,position.Y-height[`
-  /// </description></item>
-  /// </list>
-  /// </remarks>
   public Cell[,] GetRegion((int X, int Y) position, uint width, uint height) =>
     GetRegion(position.X, position.Y, width, height);
 
