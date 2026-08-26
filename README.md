@@ -10,6 +10,8 @@ Trabalho de segundo trimestre do segundo ano do COLTEC para a disciplina de prog
 
 O projeto é em C#, em constraste com as [instruções do trabalho](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/blob/main/docs/Enunciado do trabalho.pdf>) que explicita o uso de Java; mas isso foi algo aceito por nossa orientadora e conversado de antemão.
 
+O [relatório](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/blob/main/docs/Campo_Minado_Infinito.pdf>) contém informações sobre o processo de desenvolvimento do trabalho, o código e como jogar o jogo.
+
 ## Execução
 
 Você pode baixar tudo necessário para rodar o programa [aqui](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/releases/tag/1.0.0>).
