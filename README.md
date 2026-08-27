@@ -14,7 +14,7 @@ O [relatório](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/blob/
 
 ## Execução
 
-Você pode baixar tudo necessário para rodar o programa [aqui](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/releases/tag/1.0.0>).
+Você pode baixar tudo necessário para rodar o programa na aba [Releases](<https://github.com/eduardo-lamounier/Campo-Minado-Infinito/releases/>).
 
 Caso você queira compilar você mesmo, clone o projeto:
 
